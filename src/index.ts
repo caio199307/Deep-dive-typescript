@@ -1,28 +1,54 @@
-    const content = document.getElementById('content');
+const button = <HTMLInputElement>document.querySelector('button[id="add"]')
+const accessRadio = <HTMLElement>document.getElementById('accessRadio')
+button.addEventListener('click', addEmployee)
 
-    const button = document.querySelector('button[id="add"]')
+enum accessOptions {
+  administrator = 'administrador',
+  manager = 'gerente',
+  employee = 'funcionário'
+}
 
-    button.addEventListener('click', addEmployee)
+const accessOptionsValues = Object.values(accessOptions)
 
-    function addEmployee() {
-      let fullName: HTMLInputElement = document.querySelector('#fullName')
-      let register: HTMLInputElement = document.querySelector('#register')
-      let admin = <HTMLInputElement>document.querySelector('input[name="admin"]:checked')
-      let active: HTMLInputElement = document.querySelector('#active')
+accessOptionsValues.forEach((value: string, i: number) => {
+  accessRadio.innerHTML += `
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="access" id="accessRadio${i}" value="${value}">
+    <label class="form-check-label capitalLetter" for="no">
+      ${value}
+    </label>
+  </div>
+  `
+})
 
-      content.innerHTML += <string>createLine(
-        fullName.value,
-        +register.value,
-        admin.value,
-        active.checked
-      )
-    }
- 
-    function createLine(fullName: string, nrRegister: number, admin: string, active: boolean) {
-      return `<br>
-      ${fullName}<br>
-      ${nrRegister}<br>
-      ${admin}<br>
-      ${active}<br>
-      `;
-    }
+function addEmployee(): void {
+  const content = document.getElementById('content') as HTMLElement
+
+  let fullName = document.querySelector('#fullName') as HTMLInputElement
+  let register = document.querySelector('#register') as HTMLInputElement
+  let admin = document.querySelector('input[name="access"]:checked') as HTMLInputElement
+  let active = document.querySelector('#active') as HTMLInputElement
+
+  content.innerHTML += <string>createLine(
+    fullName.value,
+    register.value,
+    admin.value,
+    active.checked
+  )
+}
+
+function createLine (fullName: string, NrRegister:string | number, admin: string, active: boolean) {
+  return `
+  <div class="card mb-1">
+    <div class="card-header">
+      ${NrRegister}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">${fullName}</h5>
+      <a href="#" class="btn btn-primary">${active ? 'Ativo' : 'Inativo'}</a>
+    </div>
+    <div class="card-footer bg-transparent border-success">
+      Acesso: ${admin}
+    </div>
+  </div>`;
+}
