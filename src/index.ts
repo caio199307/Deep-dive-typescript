@@ -1,4 +1,4 @@
-import { accessOptions, userType } from "./models"
+import { accessOptions, IUser } from "./models"
 
 const content = document.getElementById('content') as HTMLElement
 const button = <HTMLInputElement>document.querySelector('button[id="add"]')
@@ -8,17 +8,17 @@ button.addEventListener('click', addEmployee)
 const accessOptionsValues = Object.values(accessOptions)
 
 const updateUserLayout = async (): Promise<void> => {
-  const users: userType[] = await getUser()
-  users.map((user: userType) => {
+  const users: IUser[] = await getUser()
+  users.map((user: IUser) => {
     content.innerHTML += <string>createLine(user)
   })
 }
 
 
 
-const getUser = async (): Promise<userType[]> => {
+const getUser = async (): Promise<IUser[]> => {
   const response: Response = await fetch('http://localhost:5011/users')
-  const users: userType[] = await response.json()
+  const users: IUser[] = await response.json()
   return users;
 }
 
@@ -36,7 +36,7 @@ function addEmployee(): void {
 
   const [fullName, register, admin, active, addressHome, addressWork] = formFields
 
-  let user: userType = {
+  let user: IUser = {
     fullName: fullName!.value,
     register: register.value != '' ? register.value : undefined,
     active: active.checked,
@@ -92,7 +92,7 @@ function createLine ({
   register = Math.random().toString(36).substring(7).toUpperCase(),
   active = false,
   access = accessOptions.undefined
-}: userType, 
+}: IUser, 
 ...address: string[]) {
   return `
   <div class="card mb-1">
