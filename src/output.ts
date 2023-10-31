@@ -1,46 +1,50 @@
-import { accessOptions, IUser } from "./models";
+import { accessOptions, User } from "./models";
 
-export class UserController {
+class UserController {
   //propriedades
-  button: HTMLFormElement = this.getFormElement('#insert');
   content: HTMLElement = this.getElement('#content');
   accessRadio: HTMLElement = this.getElement('#accessRadio');
-  accessOptionsValues = Object.values(accessOptions)
+  accessOptionsValues = Object.values(accessOptions);
+  button: HTMLFormElement = this.getFormElement('#insert');
 
+  //construtor
   constructor() {
     this.button.addEventListener('click', () => this.addEmployee());
+    this.userLayout()
   }
 
   private getElement(selector: string): HTMLElement {
     return document.querySelector(selector) as HTMLElement
   }
+
   private getFormElement(selector: string): HTMLFormElement {
     return document.querySelector(selector) as HTMLFormElement
   }
 
   //funcionalidades
   async userLayout(): Promise<void> {
-    const users: IUser[] = await this.getUser();
+    const users: User[] = await this.getUser();
 
-    users.map((user: IUser) => {
+    users.map((user: User) => {
       this.content.innerHTML += <string>this.createLine(user);
     });
+
     this.accessOptionsValues.forEach((value: string, i: number) => {
-        this.accessRadio.innerHTML += `
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="access" id="accessRadio${i}" value="${value}">
-          <label class="form-check-label capitalLetter" for="no">
-            ${value}
-          </label>
-        </div>
-        `
-      });
-      (this.getFormElement('#accessRadio0')).checked = true;
+      this.accessRadio.innerHTML += `
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="access" id="accessRadio${i}" value="${value}">
+        <label class="form-check-label capitalLetter" for="no">
+          ${value}
+        </label>
+      </div>
+      `;
+    });
+    (this.getFormElement('#accessRadio0')).checked = true;
   };
 
-  async getUser(): Promise<IUser[]> {
+  async getUser(): Promise<User[]> {
     const response: Response = await fetch('http://localhost:5011/users');
-    const users: IUser[] = await response.json();
+    const users: User[] = await response.json();
     return users;
   };
 
@@ -56,7 +60,7 @@ export class UserController {
   
     const [fullName, register, admin, active, addressHome, addressWork] = formFields;
   
-    let user: IUser = {
+    let user: User = {
       fullName: fullName!.value,
       register: register.value != '' ? register.value : undefined,
       active: active.checked,
@@ -72,7 +76,7 @@ export class UserController {
       register = Math.random().toString(36).substring(7).toUpperCase(),
       active = false,
       access = accessOptions.undefined,
-    }: IUser,
+    }: User,
     ...address: string[]
   ): string {
     return `
@@ -97,3 +101,5 @@ export class UserController {
       </div>`;
   }
 }
+
+export default new UserController;
