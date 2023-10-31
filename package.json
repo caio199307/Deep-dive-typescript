@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "dev": "webpack --watch"
+    "dev": "webpack --watch",
+    "jsonServer": "json-server src/data/data.json -d 5000 -p 5011",
+    "project": "npm run dev & npm run jsonServer"
   },
   "devDependencies": {
     "ts-loader": "^9.5.0",
